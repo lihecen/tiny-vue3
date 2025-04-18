@@ -1,4 +1,6 @@
 import { extend } from "./shared";
+let activeEffect;
+let shouldTrack;
 class ReactiveEffect {
     private _fn: any;
     deps = [];
@@ -10,7 +12,17 @@ class ReactiveEffect {
     }
     run() {
         activeEffect = this;
-        return this._fn();
+        //收集依赖
+        if(!this.active) {
+            return this._fn();
+        }
+        //应该收集
+        shouldTrack = true;
+        activeEffect = this;
+        const result = this._fn();
+        //重置
+        shouldTrack = false;
+        return result;
     }
     stop() {
        //外部用户多次调用effect的时候deps也只会清空一次
@@ -28,11 +40,15 @@ function cleanupEffect(effect) {
    effect.deps.forEach((dep: any) => {
      dep.delete(effect);
    });
+   effect.deps.length = 0;
 }
 //依赖收集
 //用 Map 数据结构，形成target -> key -> dep 查询方案
 const targetMap = new Map();
 export function track(target, key) {
+    if(!isTracking()) {
+        return;
+    }
     //target -> key -> dep
     let depsMap = targetMap.get(target);
     //解决初始化问题--key不存在
@@ -45,11 +61,16 @@ export function track(target, key) {
         dep = new Set();
         depsMap.set(key, dep);
     }
-    if(!activeEffect) {
+    //依赖已经在dep中--需要判断
+    if(dep.has(activeEffect)) {
         return;
     }
     dep.add(activeEffect);
     activeEffect.deps.push(dep);
+}
+
+function isTracking() {
+    return shouldTrack && activeEffect !== undefined;
 }
 
 //触发依赖
@@ -67,8 +88,6 @@ export function trigger(target, key) {
    }
 } 
 
-
-let activeEffect;
 export function effect(fn, options: any = {}) {
     //调用fn
     const _effect = new ReactiveEffect(fn, options.scheduler);
