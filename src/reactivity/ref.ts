@@ -50,3 +50,21 @@ export function unRef(ref) {
    //判断是否为ref，如果是则返回ref.value, 否则直接返回ref
    return isRef(ref) ? ref.value : ref;
 }
+
+export function proxyRefs(objectWithRefs) {
+   //get | set
+   return new Proxy(objectWithRefs, {
+      get(target, key) {
+         //调用get()，如果age属性为ref，则返回age.value, 否则返回本身的value
+         return unRef(Reflect.get(target, key));
+      },
+      set(target, key, value) {
+         //调用set(), 如果原来的值是ref属性并且新传入的值不是ref属性，则把新的值赋给原来的值，否则直接返回
+         if(isRef(target[key]) && !isRef(value)) {
+            return target[key].value = value;
+         }else {
+            return Reflect.set(target, key, value);
+         }
+      }
+   })
+}
