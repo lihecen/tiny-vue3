@@ -61,6 +61,10 @@ export function track(target, key) {
         dep = new Set();
         depsMap.set(key, dep);
     }
+    trackEffects(dep);
+}
+
+export function trackEffects(dep) {
     //依赖已经在dep中--需要判断
     if(dep.has(activeEffect)) {
         return;
@@ -69,7 +73,7 @@ export function track(target, key) {
     activeEffect.deps.push(dep);
 }
 
-function isTracking() {
+export function isTracking() {
     return shouldTrack && activeEffect !== undefined;
 }
 
@@ -78,7 +82,11 @@ export function trigger(target, key) {
    //取出依赖并循环
    let depsMap = targetMap.get(target);
    let dep = depsMap.get(key);
-   //for循环
+   triggerEffects(dep);
+} 
+
+export function triggerEffects(dep) {
+    //for循环
    for(const effect of dep) {
     if(effect.scheduler) {
         effect.scheduler();
@@ -86,7 +94,7 @@ export function trigger(target, key) {
         effect.run();
     }
    }
-} 
+}
 
 export function effect(fn, options: any = {}) {
     //调用fn
