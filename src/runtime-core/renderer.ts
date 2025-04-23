@@ -21,7 +21,8 @@ function processElement(vnode: any, container: any) {
 }
 
 function mountElement(vnode: any, container: any) {
-  const el = document.createElement(vnode.type);
+  //vnode -> element类型（div)
+  const el = (vnode.el = document.createElement(vnode.type));
   //string + array
   const { children } = vnode;
   if (typeof children === "string") {
@@ -49,16 +50,20 @@ function processComponent(vnode: any, container: any) {
   mountComponent(vnode, container);
 }
 
-function mountComponent(vnode: any, container) {
-  const instance = createComponentInstance(vnode);
+function mountComponent(initialVNode: any, container) {
+  const instance = createComponentInstance(initialVNode);
   setupComponent(instance);
-  setupRenderEffect(instance, container);
+  setupRenderEffect(instance, initialVNode, container);
 }
 
-function setupRenderEffect(instance: any, container) {
+function setupRenderEffect(instance: any, initialVNode, container) {
   const { proxy } = instance;
   const subTree = instance.render.call(proxy);
   //vnode -> patch
   //vnode -> element -> mountElement
   patch(subTree, container);
+
+  //先用vnode.el把当前创建的虚拟节点存储下来
+  //patch方法是一层一层从上至下递归遍历，当处理完成时，将所有根节点树的el属性赋值给当前组件vnode
+  initialVNode.el = subTree.el;
 }
