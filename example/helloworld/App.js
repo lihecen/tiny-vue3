@@ -8,6 +8,12 @@ export const App = {
       {
         id: "root",
         class: ["red", "hard"],
+        onClick() {
+          console.log("click");
+        },
+        onMousedown() {
+          console.log("mousedown");
+        },
       },
       //this.$el: 返回根节点 root element
       "hi, " + this.msg

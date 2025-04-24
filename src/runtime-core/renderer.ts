@@ -42,7 +42,17 @@ function mountElement(vnode: any, container: any) {
   const { props } = vnode;
   for (const key in props) {
     const val = props[key];
-    el.setAttribute(key, val);
+    console.log(key);
+    //注册事件的时机--> 只有key的规范为 on + Event name 时才是一个注册事件
+    //封装 isOn 函数
+    const isOn = (key: string) => /^on[A -Z]/.test(key);
+    if (isOn(key)) {
+      //onClick -> click
+      const event = key.slice(2).toLowerCase();
+      el.addEventListener(event, val);
+    } else {
+      el.setAttribute(key, val);
+    }
   }
   container.append(el);
 }
