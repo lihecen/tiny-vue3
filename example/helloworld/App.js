@@ -1,6 +1,8 @@
 import { h } from "../../lib/guide-tiny-vue3.esm.js";
+import { Foo } from "./Foo.js";
 window.self = null;
 export const App = {
+  name: "App",
   render() {
     window.self = this;
     return h(
@@ -15,8 +17,9 @@ export const App = {
           console.log("mousedown");
         },
       },
+      [h("div", {}, "hi " + this.msg), h(Foo, { count: 1 })]
       //this.$el: 返回根节点 root element
-      "hi, " + this.msg
+      //"hi, " + this.msg
       //[
       //  Array
       //  h("p", { class: "red" }, "hi"),

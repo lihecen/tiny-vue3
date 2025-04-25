@@ -1,3 +1,4 @@
+import { hasOwn } from "../shared";
 //利用Map来扩展更多的功能
 const publicPropertiesMap = {
   $el: (i) => i.vnode.el,
@@ -8,9 +9,11 @@ export const PublicInstanceProxyHandlers = {
     //target 表示 ctx
     //从setupState中获取值
     //instance.setupState = setupResult
-    const { setupState } = instance;
-    if (key in setupState) {
+    const { setupState, props } = instance;
+    if (hasOwn(setupState, key)) {
       return setupState[key];
+    } else if (hasOwn(props, key)) {
+      return props[key];
     }
     const publicGetter = publicPropertiesMap[key];
     if (publicGetter) {
