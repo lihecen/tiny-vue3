@@ -1,4 +1,4 @@
-import { createVNode } from "../vnode";
+import { createVNode, Fragment } from "../vnode";
 export function renderSlots(slots, name, props) {
   //vnode
   //获取需要渲染的 slot
@@ -6,7 +6,7 @@ export function renderSlots(slots, name, props) {
   if (slot) {
     //判断 slot 是否为 function 类型
     if (typeof slot === "function") {
-      return createVNode("div", {}, slot(props));
+      return createVNode(Fragment, {}, slot(props));
     }
   }
 }
