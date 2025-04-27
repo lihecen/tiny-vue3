@@ -2,6 +2,7 @@ import { hasOwn } from "../shared";
 //利用Map来扩展更多的功能
 const publicPropertiesMap = {
   $el: (i) => i.vnode.el,
+  $slots: (i) => i.slots,
 };
 export const PublicInstanceProxyHandlers = {
   get({ _: instance }, key) {
