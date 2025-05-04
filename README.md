@@ -52,18 +52,18 @@
 - [√] 支持 shallowReadonly
 - [√] 支持 proxyRefs
 
-### compiler-core
+#### compiler-core
 - [x] 解析插值
 - [x] 解析 element
 - [x] 解析 text
 
-### runtime-dom
+#### runtime-dom
 - [√] 支持 custom renderer 
 
-### runtime-test
+#### runtime-test
 - [x] 支持测试 runtime-core 的逻辑
 
-### infrastructure
+#### infrastructure
 - [x] support monorepo with pnpm
 ### build
 
