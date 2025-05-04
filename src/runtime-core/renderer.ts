@@ -1,4 +1,5 @@
 import { effect } from "../reactivity/effect";
+import { EMPTY_OBJ } from "../shared";
 import { ShapeFlags } from "../shared/ShapeFlags";
 import { createComponentInstance, setupComponent } from "./component";
 import { createAppAPI } from "./createApp";
@@ -60,6 +61,34 @@ export function createRenderer(options) {
     console.log("patchElement");
     console.log("n1", n1);
     console.log("n2", n2);
+    //取出旧节点的属性
+    const oldProps = n1.props || EMPTY_OBJ;
+    //取出新节点的属性
+    const newProps = n2.props || EMPTY_OBJ;
+    //在下一次调用 patchElement 时 n2 变成 n1
+    const el = (n2.el = n1.el);
+    compareProps(el, oldProps, newProps);
+  }
+  function compareProps(el, oldProps, newProps) {
+    if (oldProps !== newProps) {
+      //对新节点的属性进行遍历
+      for (const key in newProps) {
+        const prevProp = oldProps[key];
+        const newProp = newProps[key];
+        //当当前的新旧属性不一致时，进行触发更新
+        if (prevProp !== newProp) {
+          patchProps(el, key, prevProp, newProp);
+        }
+      }
+      if (oldProps !== EMPTY_OBJ) {
+        //对旧节点的属性进行遍历
+        for (const key in oldProps) {
+          if (!(key in newProps)) {
+            patchProps(el, key, oldProps[key], null);
+          }
+        }
+      }
+    }
   }
 
   function mountElement(vnode: any, container: any, parentComponent) {
@@ -81,7 +110,7 @@ export function createRenderer(options) {
     const { props } = vnode;
     for (const key in props) {
       const val = props[key];
-      patchProps(el, key, val);
+      patchProps(el, key, null, val);
     }
     //canvas
     //el.x = 10
