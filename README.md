@@ -16,20 +16,20 @@
 
 #### runtime-core
 
-- [x] 支持组件类型
-- [x] 支持 element 类型
+- [√] 支持组件类型
+- [×] 支持 element 类型
 - [√] 初始化 props
-- [x] setup 可获取 props 和 context
+- [√] setup 可获取 props 和 context
 - [√] 支持 component emit
 - [√] 支持 proxy
-- [x] 可以在 render 函数中获取 setup 返回的对象
-- [x] nextTick 的实现
+- [√] 可以在 render 函数中获取 setup 返回的对象
+- [×] nextTick 的实现
 - [√] 支持 getCurrentInstance
 - [√] 支持 provide/inject
 - [√] 支持最基础的 slots
 - [√] 支持 Text 类型节点
 - [√] 支持 $el api
-- [x] 支持 watchEffect
+- [×] 支持 watchEffect
 
 
 #### reactivity
@@ -53,18 +53,18 @@
 - [√] 支持 proxyRefs
 
 #### compiler-core
-- [x] 解析插值
-- [x] 解析 element
-- [x] 解析 text
+- [×] 解析插值
+- [×] 解析 element
+- [×] 解析 text
 
 #### runtime-dom
 - [√] 支持 custom renderer 
 
 #### runtime-test
-- [x] 支持测试 runtime-core 的逻辑
+- [×] 支持测试 runtime-core 的逻辑
 
 #### infrastructure
-- [x] support monorepo with pnpm
+- [×] support monorepo with pnpm
 ### build
 
 ```shell
