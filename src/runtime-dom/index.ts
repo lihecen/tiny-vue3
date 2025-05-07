@@ -18,8 +18,9 @@ function patchProps(el, key, prevVal, nextVal) {
     }
   }
 }
-function insert(el, parent) {
-  parent.append(el);
+//anchor: 锚点，代表需要添加的位置
+function insert(child, parent, anchor) {
+  parent.insertBefore(child, anchor || null);
 }
 
 function remove(child) {
