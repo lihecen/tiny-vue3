@@ -45,13 +45,13 @@ import { ref, h } from "../../lib/guide-tiny-vue3.esm.js";
 //右侧
 // (a b)
 // d c (a b)
-const prevChildren = [h("p", { key: "A" }, "A"), h("p", { key: "B" }, "B")];
-const nextChildren = [
-  h("p", { key: "D" }, "D"),
-  h("p", { key: "C" }, "C"),
-  h("p", { key: "A" }, "A"),
-  h("p", { key: "B" }, "B"),
-];
+//const prevChildren = [h("p", { key: "A" }, "A"), h("p", { key: "B" }, "B")];
+//const nextChildren = [
+//  h("p", { key: "D" }, "D"),
+//  h("p", { key: "C" }, "C"),
+//  h("p", { key: "A" }, "A"),
+//  h("p", { key: "B" }, "B"),
+//];
 
 //4: 旧的比新的长--删除旧节点
 //左侧
@@ -73,6 +73,48 @@ const nextChildren = [
 //  h("p", { key: "C" }, "C"),
 //];
 //const nextChildren = [h("p", { key: "B" }, "B"), h("p", { key: "C" }, "C")];
+
+//5: 对比中间的部分
+//在旧的节点中存在，在新的节点中不存在 -- 删除旧节点
+//a b (c d) f g
+//a b (e c) f g
+//const prevChildren = [
+//  h("p", { key: "A" }, "A"),
+//  h("p", { key: "B" }, "B"),
+//  h("p", { key: "C", id: "c-prev" }, "C"),
+//  h("p", { key: "D" }, "D"),
+//  h("p", { key: "F" }, "F"),
+//  h("p", { key: "G" }, "G"),
+//];
+//const nextChildren = [
+//  h("P", { key: "A" }, "A"),
+//  h("p", { key: "B" }, "B"),
+//  h("p", { key: "E" }, "E"),
+//  h("p", { key: "C", id: "c-next" }, "C"),
+//  h("p", { key: "F" }, "F"),
+//  h("p", { key: "G" }, "G"),
+//];
+
+//旧节点比新节点多 --多出来的部分直接删除
+// a b (c e d) f g
+// a b (e c) f g
+const prevChildren = [
+  h("p", { key: "A" }, "A"),
+  h("p", { key: "B" }, "B"),
+  h("p", { key: "C", id: "c-prev" }, "C"),
+  h("p", { key: "E" }, "E"),
+  h("p", { key: "D" }, "D"),
+  h("p", { key: "F" }, "F"),
+  h("p", { key: "G" }, "G"),
+];
+const nextChildren = [
+  h("p", { key: "A" }, "A"),
+  h("p", { key: "B" }, "B"),
+  h("p", { key: "E" }, "E"),
+  h("p", { key: "C", id: "c-next" }, "C"),
+  h("p", { key: "F" }, "F"),
+  h("p", { key: "G" }, "G"),
+];
 export default {
   name: "ArrayToArray",
   setup() {
