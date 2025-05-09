@@ -98,20 +98,88 @@ import { ref, h } from "../../lib/guide-tiny-vue3.esm.js";
 //旧节点比新节点多 --多出来的部分直接删除
 // a b (c e d) f g
 // a b (e c) f g
+//const prevChildren = [
+//  h("p", { key: "A" }, "A"),
+//  h("p", { key: "B" }, "B"),
+//  h("p", { key: "C", id: "c-prev" }, "C"),
+//  h("p", { key: "E" }, "E"),
+//  h("p", { key: "D" }, "D"),
+//  h("p", { key: "F" }, "F"),
+//  h("p", { key: "G" }, "G"),
+//];
+//const nextChildren = [
+//  h("p", { key: "A" }, "A"),
+//  h("p", { key: "B" }, "B"),
+//  h("p", { key: "E" }, "E"),
+//  h("p", { key: "C", id: "c-next" }, "C"),
+//  h("p", { key: "F" }, "F"),
+//  h("p", { key: "G" }, "G"),
+//];
+
+//移动
+//节点存在于新节点和旧节点中，只是位置发生改变
+// a b (c d e) f g
+// a b (e c d) f g
+//const prevChildren = [
+//  h("p", { key: "A" }, "A"),
+//  h("p", { key: "B" }, "B"),
+//  h("p", { key: "C" }, "C"),
+//  h("p", { key: "D" }, "D"),
+//  h("p", { key: "E" }, "E"),
+//  h("p", { key: "F" }, "F"),
+//  h("p", { key: "G" }, "G"),
+//];
+//const nextChildren = [
+//  h("p", { key: "A" }, "A"),
+//  h("p", { key: "B" }, "B"),
+//  h("p", { key: "E" }, "E"),
+//  h("p", { key: "C" }, "C"),
+//  h("p", { key: "D" }, "D"),
+//  h("p", { key: "F" }, "F"),
+//  h("p", { key: "G" }, "G"),
+//];
+
+//创建新节点
+//a b (c e) f g
+//a b (e c d) f g
+//const prevChildren = [
+//  h("p", { key: "A" }, "A"),
+//  h("p", { key: "B" }, "B"),
+//  h("p", { key: "C" }, "C"),
+//  h("p", { key: "E" }, "E"),
+//  h("p", { key: "F" }, "F"),
+//  h("p", { key: "G" }, "G"),
+//];
+//const nextChildren = [
+//  h("p", { key: "A" }, "A"),
+//  h("p", { key: "B" }, "B"),
+//  h("p", { key: "E" }, "E"),
+//  h("p", { key: "C" }, "C"),
+//  h("p", { key: "D" }, "D"),
+//  h("p", { key: "F" }, "F"),
+//  h("p", { key: "G" }, "G"),
+//];
+
+//综合例子
+//a b (c d e z) f g
+//a b (d c y e) f g
 const prevChildren = [
   h("p", { key: "A" }, "A"),
   h("p", { key: "B" }, "B"),
-  h("p", { key: "C", id: "c-prev" }, "C"),
-  h("p", { key: "E" }, "E"),
+  h("p", { key: "C" }, "C"),
   h("p", { key: "D" }, "D"),
+  h("p", { key: "E" }, "E"),
+  h("p", { key: "Z" }, "Z"),
   h("p", { key: "F" }, "F"),
   h("p", { key: "G" }, "G"),
 ];
 const nextChildren = [
   h("p", { key: "A" }, "A"),
   h("p", { key: "B" }, "B"),
+  h("p", { key: "D" }, "D"),
+  h("p", { key: "C" }, "C"),
+  h("p", { key: "Y" }, "Y"),
   h("p", { key: "E" }, "E"),
-  h("p", { key: "C", id: "c-next" }, "C"),
   h("p", { key: "F" }, "F"),
   h("p", { key: "G" }, "G"),
 ];
