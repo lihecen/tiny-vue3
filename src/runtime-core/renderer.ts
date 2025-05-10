@@ -2,6 +2,7 @@ import { effect } from "../reactivity/effect";
 import { EMPTY_OBJ } from "../shared";
 import { ShapeFlags } from "../shared/ShapeFlags";
 import { createComponentInstance, setupComponent } from "./component";
+import { shouldUpdateComponent } from "./componentUpdateUtils";
 import { createAppAPI } from "./createApp";
 import { Fragment, Text } from "./vnode";
 export function createRenderer(options) {
@@ -327,7 +328,28 @@ export function createRenderer(options) {
     parentComponent,
     anchor
   ) {
-    mountComponent(n2, container, parentComponent, anchor);
+    if (!n1) {
+      //挂载
+      mountComponent(n2, container, parentComponent, anchor);
+    } else {
+      //更新
+      updateComponent(n1, n2);
+    }
+  }
+
+  function updateComponent(n1, n2) {
+    //取出组件实例对象
+    const instance = (n2.component = n1.component);
+    //判断组件是否需要更新
+    if (shouldUpdateComponent(n1, n2)) {
+      //将新的节点存储到下一个需要更新的节点
+      instance.next = n2;
+      //更新
+      instance.update();
+    } else {
+      n2.el = n1.el;
+      instance.vnode = n2;
+    }
   }
 
   function mountComponent(
@@ -336,7 +358,10 @@ export function createRenderer(options) {
     parentComponent,
     anchor
   ) {
-    const instance = createComponentInstance(initialVNode, parentComponent);
+    const instance = (initialVNode.component = createComponentInstance(
+      initialVNode,
+      parentComponent
+    ));
     setupComponent(instance);
     setupRenderEffect(instance, initialVNode, container, anchor);
   }
@@ -344,7 +369,7 @@ export function createRenderer(options) {
   function setupRenderEffect(instance: any, initialVNode, container, anchor) {
     //利用 effect 包裹 render 函数，当调用 render 函数时会触发依赖收集，同时会触发响应式对象的 get 操作，把当前的匿名函数收集起来
     //当响应式对象值发生改变时，会触发依赖，即会重新调用当前的匿名函数，又会调用 render 函数，生成全新的 subTree
-    effect(() => {
+    instance.update = effect(() => {
       if (!instance.isMounted) {
         //初始化
         console.log("init");
@@ -362,6 +387,13 @@ export function createRenderer(options) {
       } else {
         //更新
         console.log("update");
+        //vnode 指向更新之前的虚拟节点，而 next 指向下一次更新的虚拟节点
+        const { next, vnode } = instance;
+        if (next) {
+          next.el = vnode.el;
+          //更新组件的属性
+          updateComponentPreRender(instance, next);
+        }
         const { proxy } = instance;
         const subTree = instance.render.call(proxy);
         //取出之前的 subTree
@@ -374,6 +406,12 @@ export function createRenderer(options) {
   return {
     createApp: createAppAPI(render),
   };
+}
+
+function updateComponentPreRender(instance, nextVNode) {
+  instance.vnode = nextVNode;
+  instance.next = null;
+  instance.props = nextVNode.props;
 }
 
 function getSequence(arr) {
