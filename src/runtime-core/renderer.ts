@@ -4,6 +4,7 @@ import { ShapeFlags } from "../shared/ShapeFlags";
 import { createComponentInstance, setupComponent } from "./component";
 import { shouldUpdateComponent } from "./componentUpdateUtils";
 import { createAppAPI } from "./createApp";
+import { queueJobs } from "./scheduler";
 import { Fragment, Text } from "./vnode";
 export function createRenderer(options) {
   const { createElement, patchProps, insert, remove, setElementText } = options;
@@ -369,39 +370,47 @@ export function createRenderer(options) {
   function setupRenderEffect(instance: any, initialVNode, container, anchor) {
     //利用 effect 包裹 render 函数，当调用 render 函数时会触发依赖收集，同时会触发响应式对象的 get 操作，把当前的匿名函数收集起来
     //当响应式对象值发生改变时，会触发依赖，即会重新调用当前的匿名函数，又会调用 render 函数，生成全新的 subTree
-    instance.update = effect(() => {
-      if (!instance.isMounted) {
-        //初始化
-        console.log("init");
-        const { proxy } = instance;
-        //先存储之前的 subTree
-        const subTree = (instance.subTree = instance.render.call(proxy));
-        //vnode -> patch
-        //vnode -> element -> mountElement
-        patch(null, subTree, container, instance, anchor);
+    instance.update = effect(
+      () => {
+        if (!instance.isMounted) {
+          //初始化
+          console.log("init");
+          const { proxy } = instance;
+          //先存储之前的 subTree
+          const subTree = (instance.subTree = instance.render.call(proxy));
+          //vnode -> patch
+          //vnode -> element -> mountElement
+          patch(null, subTree, container, instance, anchor);
 
-        //先用vnode.el把当前创建的虚拟节点存储下来
-        //patch方法是一层一层从上至下递归遍历，当处理完成时，将所有根节点树的el属性赋值给当前组件vnode
-        initialVNode.el = subTree.el;
-        instance.isMounted = true;
-      } else {
-        //更新
-        console.log("update");
-        //vnode 指向更新之前的虚拟节点，而 next 指向下一次更新的虚拟节点
-        const { next, vnode } = instance;
-        if (next) {
-          next.el = vnode.el;
-          //更新组件的属性
-          updateComponentPreRender(instance, next);
+          //先用vnode.el把当前创建的虚拟节点存储下来
+          //patch方法是一层一层从上至下递归遍历，当处理完成时，将所有根节点树的el属性赋值给当前组件vnode
+          initialVNode.el = subTree.el;
+          instance.isMounted = true;
+        } else {
+          //更新
+          console.log("update");
+          //vnode 指向更新之前的虚拟节点，而 next 指向下一次更新的虚拟节点
+          const { next, vnode } = instance;
+          if (next) {
+            next.el = vnode.el;
+            //更新组件的属性
+            updateComponentPreRender(instance, next);
+          }
+          const { proxy } = instance;
+          const subTree = instance.render.call(proxy);
+          //取出之前的 subTree
+          const prevTree = instance.subTree;
+          instance.subTree = subTree;
+          patch(prevTree, subTree, container, instance, anchor);
         }
-        const { proxy } = instance;
-        const subTree = instance.render.call(proxy);
-        //取出之前的 subTree
-        const prevTree = instance.subTree;
-        instance.subTree = subTree;
-        patch(prevTree, subTree, container, instance, anchor);
+      },
+      {
+        scheduler() {
+          console.log("update -- scheduler");
+          queueJobs(instance.update);
+        },
       }
-    });
+    );
   }
   return {
     createApp: createAppAPI(render),

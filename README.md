@@ -1,4 +1,4 @@
-## tiny-vue3 
+## tiny-vue3
 
 实现最简单的 vue3 模型，用于深入学习 vue3
 
@@ -23,14 +23,13 @@
 - [√] 支持 component emit
 - [√] 支持 proxy
 - [√] 可以在 render 函数中获取 setup 返回的对象
-- [×] nextTick 的实现
+- [√] nextTick 的实现
 - [√] 支持 getCurrentInstance
 - [√] 支持 provide/inject
 - [√] 支持最基础的 slots
 - [√] 支持 Text 类型节点
 - [√] 支持 $el api
 - [×] 支持 watchEffect
-
 
 #### reactivity
 
@@ -53,18 +52,23 @@
 - [√] 支持 proxyRefs
 
 #### compiler-core
+
 - [×] 解析插值
 - [×] 解析 element
 - [×] 解析 text
 
 #### runtime-dom
-- [√] 支持 custom renderer 
+
+- [√] 支持 custom renderer
 
 #### runtime-test
+
 - [×] 支持测试 runtime-core 的逻辑
 
 #### infrastructure
+
 - [×] support monorepo with pnpm
+
 ### build
 
 ```shell
