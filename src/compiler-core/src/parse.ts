@@ -33,8 +33,28 @@ function parseChildren(context) {
       node = parseElement(context);
     }
   }
+  if (!node) {
+    node = parseText(context);
+  }
   nodes.push(node);
   return nodes;
+}
+
+function parseText(context: any) {
+  //获取当前内容
+  const content = parseTextData(context, context.source.length);
+  return {
+    type: NodeTypes.TEXT,
+    content,
+  };
+}
+
+function parseTextData(context: any, length) {
+  //获取当前内容
+  const content = context.source.slice(0, length);
+  //删除
+  advanceBy(context, length);
+  return content;
 }
 
 function parseElement(context: any) {
@@ -72,10 +92,10 @@ function parseInterpolation(context) {
   advanceBy(context, openDelimiter.length);
   //利用右边的索引值 closeIndex 计算出 message 的长度
   const rawContentLength = closeIndex - openDelimiter.length;
-  const rawContent = context.source.slice(0, rawContentLength);
+  const rawContent = parseTextData(context, rawContentLength);
   const content = rawContent.trim();
   //将处理完的信息删除
-  advanceBy(context, rawContentLength + closeDelimiter.length);
+  advanceBy(context, closeDelimiter.length);
   return {
     type: NodeTypes.INTERPOLATION,
     content: {
