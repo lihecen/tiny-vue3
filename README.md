@@ -57,6 +57,7 @@
 - [√] 解析 element
 - [√] 解析 text
 - [√] 解析三种联合类型
+- [√] transform 的实现
 
 #### runtime-dom
 
