@@ -1,9 +1,16 @@
-export function transform(root, options) {
+export function transform(root, options = {}) {
   //创建上下文对象
   const context = createTransformContext(root, options);
   //遍历 ast 抽象语法树
   //DFS深度优先遍历
   traverseNode(root, context);
+  //root.codegenNode
+  //希望在 root 节点中实现属性
+  createRootCodegen(root);
+}
+
+function createRootCodegen(root: any) {
+  root.codegenNode = root.children[0];
 }
 
 function createTransformContext(root: any, options: any): any {
