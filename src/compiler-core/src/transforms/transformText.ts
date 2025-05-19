@@ -7,7 +7,7 @@ export function transformText(node) {
       //创建容器
       let currentContainer;
       for (let i = 0; i < children.length; i++) {
-        const { child } = children[i];
+        const child = children[i];
         if (isText(child)) {
           //搜索下一个节点
           for (let j = i + 1; j < children.length; j++) {
