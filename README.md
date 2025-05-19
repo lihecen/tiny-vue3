@@ -61,7 +61,7 @@
 - [√] 代码生成 string 类型的实现
 - [√] 代码生成插值类型的实现
 - [√] 代码生成三种联合类型的实现
-- [×] 支持编译 template 成 render 函数
+- [√] 支持编译 template 成 render 函数
 
 #### runtime-dom
 
@@ -69,7 +69,7 @@
 
 #### runtime-test
 
-- [×] 支持测试 runtime-core 的逻辑
+- [√] 支持测试 runtime-core 的逻辑
 
 #### infrastructure
 

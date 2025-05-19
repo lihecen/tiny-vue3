@@ -377,7 +377,10 @@ export function createRenderer(options) {
           console.log("init");
           const { proxy } = instance;
           //先存储之前的 subTree
-          const subTree = (instance.subTree = instance.render.call(proxy));
+          const subTree = (instance.subTree = instance.render.call(
+            proxy,
+            proxy
+          ));
           //vnode -> patch
           //vnode -> element -> mountElement
           patch(null, subTree, container, instance, anchor);
@@ -397,7 +400,7 @@ export function createRenderer(options) {
             updateComponentPreRender(instance, next);
           }
           const { proxy } = instance;
-          const subTree = instance.render.call(proxy);
+          const subTree = instance.render.call(proxy, proxy);
           //取出之前的 subTree
           const prevTree = instance.subTree;
           instance.subTree = subTree;
