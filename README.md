@@ -29,7 +29,7 @@
 - [√] 支持最基础的 slots
 - [√] 支持 Text 类型节点
 - [√] 支持 $el api
-- [×] 支持 watchEffect
+- [√] 支持 watchEffect
 
 #### reactivity
 
@@ -71,12 +71,14 @@
 
 - [√] 支持测试 runtime-core 的逻辑
 
-#### infrastructure
-
-- [×] support monorepo with pnpm
-
 ### build
 
 ```shell
-pnpm build
+yarn build
+```
+
+### test
+
+```shell
+yarn test
 ```
